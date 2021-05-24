@@ -3,16 +3,6 @@ const getPlayer = (sign) => {
     return { sign };
 };
 
-// gamboard object
-const gameboard = (() => {
-    const board = document.querySelector('.board');
-
-
-
-
-
-})();
-
 const displayController = (() => {
     const playerX = getPlayer('X');
     const playerO = getPlayer('O');
@@ -28,15 +18,20 @@ const displayController = (() => {
         const turn = circleTurn ? playerO.sign : playerX.sign;
         e.target.innerText = turn;
         circleTurn = !circleTurn;
-        checkWin();
+        if (checkWin('X')) {
+            console.log('win')
+        }
+        if (checkWin('O')) {
+            console.log('win')
+        }
+
     }
-
-
 
     return { playerX, playerO, boxes }
 })();
 
-function checkWin() {
+
+function checkWin(sign) {
     winningCombos = [
         [0, 1, 2],
         [3, 4, 5],
@@ -48,17 +43,10 @@ function checkWin() {
         [2, 4, 6]
     ]
 
-    function allChecked(indexes) {
-        return indexes.every(
-            function (index) {
-                return displayController.boxes[index].textContent === 'X'
-            }
-        )
-    }
-
-    if (winningCombos.some(allChecked)) {
-        console.log('win')
-    }
+    return winningCombos.some(combination => {
+        return combination.every(index => {
+            return displayController.boxes[index].textContent === sign
+        })
+    })
 
 }
-
