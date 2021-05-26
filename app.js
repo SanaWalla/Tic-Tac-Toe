@@ -1,9 +1,19 @@
+let endgame = false;
+
 //create player
 const getPlayer = (sign) => {
     return { sign };
 };
 
+const gameboard = (() => {
+    const game = ["", "", "", "", "", "", "", "", ""]
+
+    return { game };
+})();
+
 const displayController = (() => {
+    const winMessage = document.querySelector('.winMessage div');
+    const resetButton = document.querySelector('.resetButton');
     const playerX = getPlayer('X');
     const playerO = getPlayer('O');
     let circleTurn;
@@ -14,20 +24,22 @@ const displayController = (() => {
     })
 
     function handleClick(e) {
+
+        if (endgame) { return }
         const box = e.target;
         const turn = circleTurn ? playerO.sign : playerX.sign;
         e.target.innerText = turn;
+        const index = [...displayController.boxes].indexOf(box);
+        gameboard.game[index] = turn;
         circleTurn = !circleTurn;
-        if (checkWin('X')) {
-            console.log('win')
-        }
-        if (checkWin('O')) {
-            console.log('win')
-        }
-
+        winConditions();
     }
 
-    return { playerX, playerO, boxes }
+    resetButton.addEventListener('click', () => {
+        window.location.reload();
+    })
+
+    return { playerX, playerO, boxes, winMessage }
 })();
 
 
@@ -48,5 +60,24 @@ function checkWin(sign) {
             return displayController.boxes[index].textContent === sign
         })
     })
-
 }
+
+function checkDraw() {
+    if (!gameboard.game.includes("")) return true;
+}
+
+
+const winConditions = (() => {
+    if (checkWin('X')) {
+        displayController.winMessage.textContent = "Player X wins!"
+        endgame = true;
+    }
+    if (checkWin('O')) {
+        displayController.winMessage.textContent = "Player X wins!"
+        endgame = true;
+    }
+    if (checkDraw()) {
+        displayController.winMessage.textContent = "It's a draw"
+        endgame = true;
+    }
+});
